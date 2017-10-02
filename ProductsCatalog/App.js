@@ -4,10 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import ListItems from './src/components/listItems';
 
 export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    // console.log('constructor');
-  }
+  // constructor(props) {
+  //   super(props);
+  //   // console.log('constructor');
+  // }
 
   componentWillMount() {
     // console.log('before render');
@@ -30,8 +30,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#ddd',
+    marginTop: 25
   },
 });
