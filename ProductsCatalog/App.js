@@ -1,13 +1,27 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import ListItems from './src/components/listItems';
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    // console.log('constructor');
+  }
+
+  componentWillMount() {
+    // console.log('before render');
+  }
+
+  componentDidMount() {
+    // console.log('after render');
+  }
+
   render() {
+    // console.log('rendering');
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <ListItems />
       </View>
     );
   }
