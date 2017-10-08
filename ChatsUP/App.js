@@ -11,17 +11,10 @@ import ReduxThunk from 'redux-thunk';
 
 import Routes from './routes';
 import reducers from './src/reducers/';
+import { config } from './src/firebaseConfig';
 
 export default class App extends Component {
   componentWillMount() {
-    const config = {
-      apiKey: "AIzaSyBGU8ke4MoniD-fbhP-pXCWSLtyeEm4B9w",
-      authDomain: "chatsup-cdb28.firebaseapp.com",
-      databaseURL: "https://chatsup-cdb28.firebaseio.com",
-      projectId: "chatsup-cdb28",
-      storageBucket: "chatsup-cdb28.appspot.com",
-      messagingSenderId: "251662146051"
-    };
     firebase.initializeApp(config);
   }
 
