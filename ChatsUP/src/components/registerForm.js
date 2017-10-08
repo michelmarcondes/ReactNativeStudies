@@ -1,14 +1,52 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableHighlight, StyleSheet, Image } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableHighlight,
+    StyleSheet,
+    ImageBackground,
+    StatusBar,
+    ActivityIndicator
+} from 'react-native';
 import { connect } from 'react-redux';
 
-import { changeEmail, changePassword, changeName } from '../../actions/authActions';
+import {
+    changeEmail,
+    changePassword,
+    changeName,
+    registerUser
+} from '../actions/authActions';
+
+const bgImage = require('../assets/bg.png');
 
 class RegisterForm extends Component {
+    _registerUser() {
+        //destructuring assignment!!!
+        const { name, email, password } = this.props;
+
+        this.props.registerUser({ name, email, password });
+    }
+
+    renderRegisterButton() {
+        if (this.props.loadingRegister) {
+            return (
+                <ActivityIndicator size='large' />
+            );
+        }
+
+        return (
+            <TouchableHighlight onPress={() => this._registerUser()}>
+                <Text style={styles.btnStyle}>Criar Conta</Text>
+            </TouchableHighlight>
+        );
+    }
+
     render() {
         return (
-            <Image source={require('../../assets/bg.png')} style={styles.bgImage}>
+            <ImageBackground source={bgImage} style={styles.bgImage}>
                 <View style={styles.container}>
+                    <StatusBar barStyle="light-content" />
                     <View style={styles.formContainer}>
                         <TextInput
                             value={this.props.name}
@@ -29,15 +67,20 @@ class RegisterForm extends Component {
                             onChangeText={value => this.props.changePassword(value)}
                             secureTextEntry
                         />
+
+                        {
+                            this.props.registerError
+                                ? <Text style={styles.txtError}>{this.props.registerError}</Text>
+                                : null
+                        }
+
                     </View>
 
                     <View style={styles.btnContainer}>
-                        <TouchableHighlight onPress={() => false}>
-                            <Text style={styles.btnStyle}>Criar Conta</Text>
-                        </TouchableHighlight>
+                        { this.renderRegisterButton() }
                     </View>
                 </View>
-            </Image>
+            </ImageBackground>
         );
     }
 }
@@ -52,7 +95,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     formContainer: {
-        flex: 4,
+        flex: 5,
         justifyContent: 'center'
     },
     btnContainer: {
@@ -77,6 +120,12 @@ const styles = StyleSheet.create({
     bgImage: {
         flex: 1,
         width: null
+    },
+    txtError: {
+        color: 'red',
+        textAlign: 'center',
+        padding: 5,
+        backgroundColor: '#ffb6c1',
     }
 });
 
@@ -84,11 +133,13 @@ const mapStateToProps = (state) => (
     {
         email: state.AuthReducer.email,
         password: state.AuthReducer.password,
-        name: state.AuthReducer.name
+        name: state.AuthReducer.name,
+        registerError: state.AuthReducer.registerError,
+        loadingRegister: state.AuthReducer.loadingRegister
     }
 );
 
 export default connect(
     mapStateToProps,
-    { changeEmail, changeName, changePassword }
+    { changeEmail, changeName, changePassword, registerUser }
 )(RegisterForm);

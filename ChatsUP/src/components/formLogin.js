@@ -1,23 +1,52 @@
 import React, { Component } from 'react';
-import { 
-    View, 
-    Text, 
-    TextInput, 
-    StyleSheet, 
-    TouchableHighlight, 
-    TouchableOpacity, 
-    Image 
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    TouchableHighlight,
+    TouchableOpacity,
+    ImageBackground,
+    StatusBar,
+    ActivityIndicator
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
-import { changeEmail, changePassword } from '../../actions/authActions';
+import {
+    changeEmail,
+    changePassword,
+    authenticateUser
+} from '../actions/authActions';
+
+const bgImage = require('../assets/bg.png');
 
 class FormLogin extends Component {
+    _authenticateUser() {
+        const { email, password } = this.props;
+
+        this.props.authenticateUser({ email, password });
+    }
+
+    renderAccessButton() {
+        if(this.props.loadingLogin) {
+            return (
+                <ActivityIndicator size='large' />
+            );
+        }
+
+        return (
+            <TouchableHighlight onPress={() => this._authenticateUser()}>
+                <Text style={styles.btnStyle}>ACESSAR</Text>
+            </TouchableHighlight>
+        );
+    }
+
     render() {
         return (
-            <Image source={require('../../assets/bg.png')} style={styles.bgImage}>
+            <ImageBackground source={bgImage} style={styles.bgImage}>
                 <View style={styles.container}>
+                    <StatusBar barStyle="light-content" />
                     <View style={styles.top}>
                         <Text style={styles.h1}>
                             ChatsUP
@@ -46,15 +75,20 @@ class FormLogin extends Component {
                                 Ainda não tem cadastro? Cadastre-se!
                         </Text>
                         </TouchableOpacity>
+
+                        {
+                            this.props.loginError
+                                ? <Text style={styles.txtError}>{this.props.loginError}</Text>
+                                : null
+                        }
+
                     </View>
 
                     <View style={styles.btnContainer}>
-                        <TouchableHighlight onPress={() => false}>
-                            <Text style={styles.btnStyle}>ACESSAR</Text>
-                        </TouchableHighlight>
+                        {this.renderAccessButton()}
                     </View>
                 </View>
-            </Image>
+            </ImageBackground>
         );
     }
 }
@@ -69,7 +103,9 @@ class FormLogin extends Component {
 const mapStateToProps = (state) => (
     {
         email: state.AuthReducer.email,
-        password: state.AuthReducer.password
+        password: state.AuthReducer.password,
+        loginError: state.AuthReducer.loginError,
+        loadingLogin: state.AuthReducer.loadingLogin
     }
 );
 
@@ -83,17 +119,17 @@ const styles = StyleSheet.create({
 
     },
     top: {
-        flex: 1,
+        flex: 2,
         alignItems: 'center',
         justifyContent: 'center'
     },
     formContainer: {
-        flex: 2,
+        flex: 4,
         // alignItems: 'center',
         justifyContent: 'center'
     },
     btnContainer: {
-        flex: 2,
+        flex: 1,
         alignItems: 'stretch',
         justifyContent: 'center',
     },
@@ -123,7 +159,20 @@ const styles = StyleSheet.create({
     bgImage: {
         flex: 1,
         width: null
+    },
+    txtError: {
+        color: 'red',
+        textAlign: 'center',
+        padding: 5,
+        backgroundColor: '#ffb6c1',
     }
 });
 
-export default connect(mapStateToProps, { changeEmail, changePassword })(FormLogin);
+export default connect(
+    mapStateToProps,
+    {
+        changeEmail,
+        changePassword,
+        authenticateUser
+    }
+)(FormLogin);

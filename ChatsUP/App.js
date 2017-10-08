@@ -1,22 +1,33 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import firebase from 'firebase';
+
+//middleware da App
+// Permite q as funcoes asincronas funcionem no Redux
+// precisa do applyMiddleware do Redux
+import ReduxThunk from 'redux-thunk'; 
 
 import Routes from './routes';
 import reducers from './src/reducers/';
 
-// const instructions = Platform.select({
-//   ios: 'Press Cmd+R to reload,\n' +
-//     'Cmd+D or shake for dev menu',
-//   android: 'Double tap R on your keyboard to reload,\n' +
-//     'Shake or press menu button for dev menu',
-// });
-
 export default class App extends Component {
+  componentWillMount() {
+    const config = {
+      apiKey: "AIzaSyBGU8ke4MoniD-fbhP-pXCWSLtyeEm4B9w",
+      authDomain: "chatsup-cdb28.firebaseapp.com",
+      databaseURL: "https://chatsup-cdb28.firebaseio.com",
+      projectId: "chatsup-cdb28",
+      storageBucket: "chatsup-cdb28.appspot.com",
+      messagingSenderId: "251662146051"
+    };
+    firebase.initializeApp(config);
+  }
+
   render() {
     return (
-      <Provider store={createStore(reducers)}>
+      <Provider store={createStore(reducers, {}, applyMiddleware(ReduxThunk))}>
         <View style={styles.container}>
           <Routes />
         </View>

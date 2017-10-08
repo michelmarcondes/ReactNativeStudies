@@ -1,0 +1,9 @@
+export const CHANGE_EMAIL = 'change-email';
+export const CHANGE_PASSWORD = 'change-password';
+export const CHANGE_NAME = 'change-name';
+export const USER_REGISTRED = 'user-registered';
+export const REGISTER_ERROR = 'register-error';
+export const SIGNIN_ERROR = 'signin-error';
+export const LOADING_LOGIN = 'loading-login';
+export const USER_LOGGEDIN = 'user-loggedin';
+export const LOADING_REGISTER = 'loading-register';
