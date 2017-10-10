@@ -7,7 +7,8 @@ import {
     StyleSheet,
     ImageBackground,
     StatusBar,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -45,7 +46,7 @@ class RegisterForm extends Component {
     render() {
         return (
             <ImageBackground source={bgImage} style={styles.bgImage}>
-                <View style={styles.container}>
+                <KeyboardAvoidingView style={styles.container} behavior='padding'>
                     <StatusBar barStyle="light-content" />
                     <View style={styles.formContainer}>
                         <TextInput
@@ -59,6 +60,8 @@ class RegisterForm extends Component {
                             style={styles.formControl}
                             placeholder='E-mail'
                             onChangeText={value => this.props.changeEmail(value)}
+                            keyboardType='email-address'
+                            autoCapitalize='none'
                         />
                         <TextInput
                             value={this.props.password}
@@ -66,6 +69,7 @@ class RegisterForm extends Component {
                             placeholder='Senha'
                             onChangeText={value => this.props.changePassword(value)}
                             secureTextEntry
+                            autoCapitalize='none'
                         />
 
                         {
@@ -79,7 +83,7 @@ class RegisterForm extends Component {
                     <View style={styles.btnContainer}>
                         { this.renderRegisterButton() }
                     </View>
-                </View>
+                </KeyboardAvoidingView>
             </ImageBackground>
         );
     }

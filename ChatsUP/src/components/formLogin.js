@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     ImageBackground,
     StatusBar,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -45,7 +46,7 @@ class FormLogin extends Component {
     render() {
         return (
             <ImageBackground source={bgImage} style={styles.bgImage}>
-                <View style={styles.container}>
+                <KeyboardAvoidingView style={styles.container} behavior='padding'>
                     <StatusBar barStyle="light-content" />
                     <View style={styles.top}>
                         <Text style={styles.h1}>
@@ -60,6 +61,8 @@ class FormLogin extends Component {
                             placeholder='E-mail'
                             placeholderTextColor='#ccc'
                             onChangeText={value => this.props.changeEmail(value)}
+                            keyboardType='email-address'
+                            autoCapitalize='none'
                         />
                         <TextInput
                             value={this.props.password}
@@ -68,6 +71,7 @@ class FormLogin extends Component {
                             placeholderTextColor='#ccc'
                             onChangeText={value => this.props.changePassword(value)}
                             secureTextEntry
+                            autoCapitalize='none'
                         />
 
                         <TouchableOpacity onPress={() => Actions.register()}>
@@ -87,7 +91,7 @@ class FormLogin extends Component {
                     <View style={styles.btnContainer}>
                         {this.renderAccessButton()}
                     </View>
-                </View>
+                </KeyboardAvoidingView>
             </ImageBackground>
         );
     }
