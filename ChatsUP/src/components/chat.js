@@ -42,6 +42,7 @@ class Chat extends Component {
     _sendMessage = () => {
         const { contactName, contactEmail, message } = this.props;
         this.props.sendMessage(contactName, contactEmail, message);
+        //this.props.userChatsHistoryList();
     }
 
     _renderRow = data => {
@@ -145,7 +146,7 @@ class Chat extends Component {
 }
 
 const mapStateToProps = state => {
-    const chat = _.map(state.ChatReducer, (val, uid) => {
+    const chat = _.map(state.ChatReducer.chatList, (val, uid) => {
         return { ...val, uid };
     });
 
@@ -157,4 +158,7 @@ const mapStateToProps = state => {
     );
 };
 
-export default connect(mapStateToProps, { handleMessageChange, sendMessage, userChatFetch })(Chat);
+export default connect(
+    mapStateToProps, 
+    { handleMessageChange, sendMessage, userChatFetch }
+)(Chat);
