@@ -2,14 +2,15 @@ import firebase from 'firebase';
 import b64 from 'base-64';
 import _ from 'lodash';
 
-import { 
-    ADD_CONTACT_EMAIL_CHANGED, 
+import {
+    ADD_CONTACT_EMAIL_CHANGED,
     ADD_CONTACT_ERROR,
     ADD_CONTACT_SUCCESS,
     LOADING_ADD_CONTACT,
     CONTACT_USER_LIST,
     MESSAGE_CHANGED,
-    SEND_MESSAGE
+    SEND_MESSAGE,
+    USER_CHAT_LIST
 } from './types';
 
 export const handleAddContactEmail = value => {
@@ -86,23 +87,71 @@ export const fetchUserContacts = () => {
 
         firebase.database().ref(`/usuario_contatos/${userEncodedEmail}`)
             .on('value', snapshot => {
-                dispatch({ 
+                dispatch({
                     type: CONTACT_USER_LIST,
                     payload: snapshot.val()
-                 });
+                });
             });
     };
 };
 
 
 export const sendMessage = (contactName, contactEmail, message) => {
-    console.log(contactName);
-    console.log(contactEmail);
-    console.log(message);
+    //contact data
+    const encodedContactEmail = b64.encode(contactEmail);
 
-    return (
-        {
-            type: SEND_MESSAGE
-        }
-    );
+    //user data
+    const { currentUser } = firebase.auth();
+    const encodedUserEmail = b64.encode(currentUser.email);
+
+    return dispatch => {
+        firebase.database()
+            .ref(`/mensagens/${encodedUserEmail}/${encodedContactEmail}`)
+            .push({ message, type: 'e' })
+            .then(() => {
+                firebase.database()
+                    .ref(`/mensagens/${encodedContactEmail}/${encodedUserEmail}`)
+                    .push({ message, type: 'r' })
+                    .then(() => {
+                        dispatch({ type: SEND_MESSAGE });
+                    });
+            })
+            .then(() => { //store user chat headers
+                firebase.database()
+                    .ref(`/usuario_conversas/${encodedUserEmail}/${encodedContactEmail}`)
+                    .set({ name: contactName, email: contactEmail });
+            })
+            .then(() => { //store contact chat header
+                firebase.database()
+                    .ref(`/contatos/${encodedUserEmail}`)
+                    .once('value')
+                    .then(snapshot => {
+                        const userData = _.first(_.values(snapshot.val()));
+
+                        firebase.database()
+                            .ref(`/usuario_conversas/${encodedContactEmail}/${encodedUserEmail}`)
+                            .set({ name: userData.name, email: currentUser.email });
+                    });
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    };
+};
+
+export const userChatFetch = contactEmail => {
+    //contact data
+    const encodedContactEmail = b64.encode(contactEmail);
+
+    //user data
+    const { currentUser } = firebase.auth();
+    const encodedUserEmail = b64.encode(currentUser.email);
+
+    return dispatch => {
+        firebase.database()
+            .ref(`/mensagens/${encodedUserEmail}/${encodedContactEmail}`)
+            .on('value', snapshot => {
+                dispatch({ type: USER_CHAT_LIST, payload: snapshot.val() });
+            });
+    };
 };

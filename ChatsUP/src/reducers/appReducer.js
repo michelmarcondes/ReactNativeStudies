@@ -3,7 +3,8 @@ import {
     ADD_CONTACT_ERROR,
     LOADING_ADD_CONTACT,
     ADD_CONTACT_SUCCESS,
-    MESSAGE_CHANGED
+    MESSAGE_CHANGED,
+    SEND_MESSAGE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -45,6 +46,9 @@ export default (state = INITIAL_STATE, action) => {
 
         case MESSAGE_CHANGED:
             return { ...state, message: action.payload };
+
+        case SEND_MESSAGE:
+            return { ...state, message: '' };
 
         default: return state;
     }

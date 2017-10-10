@@ -1,45 +1,107 @@
 import React, { Component } from 'react';
-import { 
-    View, 
-    Text, 
-    TextInput, 
-    Image, 
-    TouchableOpacity, 
+import {
+    View,
+    Text,
+    TextInput,
+    Image,
+    TouchableOpacity,
     Keyboard,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import {
     handleMessageChange,
-    sendMessage
+    sendMessage,
+    userChatFetch
 } from '../actions/appActions';
 
 const sendImg = require('../assets/enviar_mensagem.png');
 
 class Chat extends Component {
+    componentWillMount() {
+        this.props.userChatFetch(this.props.contactEmail);
+        this.dataSource = this.props.chat;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // console.log(nextProps);
+        if (this.props.contactEmail !== nextProps.contactEmail) {
+            this.props.userChatFetch(nextProps.contactEmail);
+        }
+
+        this.dataSource = nextProps.chat;
+    }
+
+    componentWillUnmount() {
+        this.dataSource = [];
+    }
+    
     _sendMessage = () => {
         const { contactName, contactEmail, message } = this.props;
-
         this.props.sendMessage(contactName, contactEmail, message);
+    }
+
+    _renderRow = data => {
+        if (data.item.type === 'r') {
+            return (
+                <View style={{ alignItems: 'flex-end', marginVertical: 5, marginLeft: 40 }}>
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            color: '#000',
+                            padding: 10,
+                            backgroundColor: '#dbf5b4',
+                            elevation: 1
+                        }}
+                    >
+                        {data.item.message}
+                    </Text>
+                </View>
+            );
+        }
+
+        return (
+            <View style={{ alignItems: 'flex-start', marginVertical: 5, marginRight: 40 }}>
+                <Text
+                    style={{
+                        fontSize: 18,
+                        color: '#000',
+                        padding: 10,
+                        backgroundColor: '#f7f7f7',
+                        elevation: 1
+                    }}
+                >
+                    {data.item.message}
+                </Text>
+            </View>
+        );
     }
 
     render() {
         return (
-            <KeyboardAvoidingView 
-                style={{ flex: 1, marginTop: 60, backgroundColor: '#eee4dc' }} 
+            <KeyboardAvoidingView
+                style={{ flex: 1, marginTop: 60, backgroundColor: '#eee4dc' }}
                 behavior='padding'
             >
-                <TouchableOpacity 
+                {/* <TouchableOpacity
                     onPress={() => {
                         Keyboard.dismiss();
                     }}
                     style={{ flex: 1 }}
-                >
-                    <View style={{ flex: 1, paddingBottom: 20, padding: 10 }}>
-                        <Text>fadasfasda</Text>
-                    </View>
-                </TouchableOpacity>
+                > */}
+                <View style={{ flex: 1, paddingBottom: 20, padding: 10 }}>
+
+                    <FlatList
+                        data={this.dataSource}
+                        renderItem={this._renderRow}
+                        keyExtractor={(item, index) => item.uid}
+                    />
+
+                </View>
+                {/* </TouchableOpacity> */}
                 <View
                     style={[
                         {
@@ -68,7 +130,7 @@ class Chat extends Component {
 
                     <TouchableOpacity
                         activeOpacity={0.6}
-                        onPress={() => this._sendMessage()}
+                        onPress={() => { this._sendMessage(); Keyboard.dismiss(); }}
                         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                     >
                         <Image
@@ -83,11 +145,16 @@ class Chat extends Component {
 }
 
 const mapStateToProps = state => {
+    const chat = _.map(state.ChatReducer, (val, uid) => {
+        return { ...val, uid };
+    });
+
     return (
         {
-            message: state.AppReducer.message
+            message: state.AppReducer.message,
+            chat
         }
     );
 };
 
-export default connect(mapStateToProps, { handleMessageChange, sendMessage })(Chat);
+export default connect(mapStateToProps, { handleMessageChange, sendMessage, userChatFetch })(Chat);

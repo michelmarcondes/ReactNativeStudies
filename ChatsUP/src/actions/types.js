@@ -15,5 +15,6 @@ export const ADD_CONTACT_ERROR = 'add-contact-error';
 export const ADD_CONTACT_SUCCESS = 'add-contact-success';
 export const LOADING_ADD_CONTACT = 'loading-add-contact';
 export const CONTACT_USER_LIST = 'contact-user-list';
-export const MESSAGE_CHANGED = 'message-change';
+export const MESSAGE_CHANGED = 'message-changed';
 export const SEND_MESSAGE = 'send-message';
+export const USER_CHAT_LIST = 'user-chat-list';
