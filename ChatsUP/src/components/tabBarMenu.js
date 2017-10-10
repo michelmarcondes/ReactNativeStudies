@@ -5,7 +5,8 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
 import {
-    enableAddContactForm
+    enableAddContactForm,
+    logOut
 } from '../actions/appActions';
 
 const addContactImg = require('../assets/adicionar-contato.png');
@@ -24,8 +25,8 @@ const TabBarMenu = props => (
             <View style={styles.actionsContainer}>
 
                 <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity 
-                        activeOpacity={0.6} 
+                    <TouchableOpacity
+                        activeOpacity={0.6}
                         onPress={() => { Actions.addContact(); props.enableAddContactForm(); }}
                     >
                         <Image source={addContactImg} />
@@ -34,7 +35,12 @@ const TabBarMenu = props => (
 
 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, color: '#fff' }}>Sair</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() => { Actions.login(); props.logOut(); }}
+                    >
+                        <Text style={{ fontSize: 20, color: '#fff' }}>Sair</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -78,4 +84,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect(null, { enableAddContactForm })(TabBarMenu);
+export default connect(null, { enableAddContactForm, logOut })(TabBarMenu);

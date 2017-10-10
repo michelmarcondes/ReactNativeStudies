@@ -18,3 +18,4 @@ export const CONTACT_USER_LIST = 'contact-user-list';
 export const MESSAGE_CHANGED = 'message-changed';
 export const SEND_MESSAGE = 'send-message';
 export const USER_CHAT_LIST = 'user-chat-list';
+export const USER_CHATS_HISTORY = 'user-chats-history';

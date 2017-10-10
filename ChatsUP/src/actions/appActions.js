@@ -10,7 +10,8 @@ import {
     CONTACT_USER_LIST,
     MESSAGE_CHANGED,
     SEND_MESSAGE,
-    USER_CHAT_LIST
+    USER_CHAT_LIST,
+    USER_CHATS_HISTORY
 } from './types';
 
 export const handleAddContactEmail = value => {
@@ -154,4 +155,25 @@ export const userChatFetch = contactEmail => {
                 dispatch({ type: USER_CHAT_LIST, payload: snapshot.val() });
             });
     };
+};
+
+export const userChatsHistoryList = () => {
+    //user data
+    const { currentUser } = firebase.auth();
+    const encodedUserEmail = b64.encode(currentUser.email);
+
+    return dispatch => {
+        firebase.database()
+            .ref(`/usuario_conversas/${encodedUserEmail}`)
+            .on('value', snapshot => {
+                dispatch({ type: USER_CHATS_HISTORY, payload: snapshot.val() });
+            });
+    };
+};
+
+export const logOut = () => {
+    firebase.auth()
+        .signOut();
+    
+        return { type: '---' };
 };

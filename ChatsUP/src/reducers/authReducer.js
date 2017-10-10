@@ -55,7 +55,7 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, loadingRegister: true };
 
         case USER_LOGGEDIN:
-            return { ...state, loadingLogin: false };
+            return { ...state, ...INITIAL_STATE };
         
         default:
             return state;
